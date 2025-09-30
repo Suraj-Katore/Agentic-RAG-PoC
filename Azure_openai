@@ -1,0 +1,32 @@
+from openai import AzureOpenAI
+
+# gets the API Key from environment variable AZURE_OPENAI_API_KEY
+client = AzureOpenAI(
+    # https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#rest-api-versioning
+    api_version="2025-01-01-preview",
+    # https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal#create-a-resource
+    api_key="1ICfm7h6TcUzTTZ9hrJGn8hugqYLBzfAgLXHo5fFkLZnnKf3lXKZJQQJ99BHACHYHv6XJ3w3AAABACOGYHE9",
+    azure_endpoint="https://aressgenaisvc3.openai.azure.com/openai/deployments/gpt-41/chat/completions?api-version=2025-01-01-preview",
+)
+
+completion = client.chat.completions.create(
+    model="gpt-41",  # e.g. gpt-35-instant
+    messages=[
+        {
+            "role": "user",
+            "content": "Basics of artificial intelligence",
+        },
+    ],
+)
+print(completion.model_dump_json(indent=2))
+
+from agno.agent import Agent
+from agno.models.openai import OpenAIChat
+
+agent = Agent(model=OpenAIChat(id="gpt-5-mini"))
+
+# Run agent and return the response as a variable
+response = agent.run("Tell me a 5 second short story about a robot")
+print(response.content)
+print(response.run_id)
+print(response.session_id)
